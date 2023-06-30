@@ -1,12 +1,12 @@
-import App from './App'
-import Chat from './Chat'
+import App from './App';
+import Chat from './Chat';
 
 export default function Home() {
   return (
     <main>
       <App>
-        <Chat/>
+        <Chat />
       </App>
     </main>
-  )
+  );
 }

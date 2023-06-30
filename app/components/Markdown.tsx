@@ -57,11 +57,7 @@ const Markdown = forwardRef<HTMLDivElement, MarkdownProps>(
                   {String(children).replace(/\n$/, '')}
                 </SyntaxHighlighter>
               ) : (
-                <Code
-                  className={className}
-                  {...props}
-                  fontSize={fontSize}
-                >
+                <Code className={className} {...props} fontSize={fontSize}>
                   {children}
                 </Code>
               );
@@ -99,26 +95,14 @@ const Markdown = forwardRef<HTMLDivElement, MarkdownProps>(
               );
             },
             ul({ children, ...props }) {
-              return (
-                <UnorderedList {...props}>
-                  {children}
-                </UnorderedList>
-              );
+              return <UnorderedList {...props}>{children}</UnorderedList>;
             },
             ol({ children, ...props }) {
-              return (
-                <OrderedList {...props}>
-                  {children}
-                </OrderedList>
-              );
+              return <OrderedList {...props}>{children}</OrderedList>;
             },
             li({ children, ...props }) {
-              return (
-                <ListItem {...props}>
-                  {children}
-                </ListItem>
-              );
-            }
+              return <ListItem {...props}>{children}</ListItem>;
+            },
           }}
         >
           {children || placeHolderText || ''}

@@ -1,19 +1,20 @@
-export const runtime = 'edge'
+export const runtime = 'edge';
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json()
+    const { messages } = await req.json();
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(
-        {
-          model: 'gpt-3.5-turbo',
-          messages: [
-            { role: "system", content: `
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: `
 You are Marty Mitchener, a Frontend Developer. Here is your resume:
 
 Patterns
@@ -62,31 +63,32 @@ Architecting on AWS - October 2020
 # Education/Awards
 B.A. Psychology at North Carolina State University (2011)
 Nominated for Most Innovative at EF Education (2013)
-`},
-            ...messages
-          ],
-          max_tokens: 512,
-          temperature: 0.75,
-          stream: true,
+`,
+          },
+          ...messages,
+        ],
+        max_tokens: 512,
+        temperature: 0.75,
+        stream: true,
       }),
-    })
+    });
 
     return new Response(res.body, {
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "text/event-stream;charset=utf-8",
-        "Cache-Control": "no-cache, no-transform",
-        "X-Accel-Buffering": "no",
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'text/event-stream;charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+        'X-Accel-Buffering': 'no',
       },
-    })
+    });
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
 
     return new Response(JSON.stringify(error), {
       status: 400,
       headers: {
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
-    })
+    });
   }
 }

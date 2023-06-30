@@ -1,32 +1,38 @@
-"use client"
-import { Avatar, Box, Button, Divider, Flex, Heading, IconButton, InputGroup, InputRightElement, Link, Stack, Text, Textarea } from "@chakra-ui/react";
-import { Fragment, useRef, useState } from "react";
+'use client';
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  IconButton,
+  InputGroup,
+  InputRightElement,
+  Link,
+  Stack,
+  Text,
+  Textarea,
+} from '@chakra-ui/react';
+import { Fragment, useRef, useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
 import { BsGithub } from 'react-icons/bs';
 import { VscRefresh } from 'react-icons/vsc';
-import Markdown from "./components/Markdown";
+import Markdown from './components/Markdown';
 
 const UserAvatar = () => {
   return (
     <Flex flexShrink={0}>
-      <Avatar
-        size="sm"
-        color="white"
-        bg="blue.500"
-        borderRadius="8px"
-        mt={1}
-      />
+      <Avatar size="sm" color="white" bg="blue.500" borderRadius="8px" mt={1} />
     </Flex>
   );
 };
 
 const AssistantAvatar = () => {
   return (
-    <Flex
-      flexShrink={0}
-    >
+    <Flex flexShrink={0}>
       <Avatar
-        src='https://avatars.githubusercontent.com/u/3722405?v=4'
+        src="https://avatars.githubusercontent.com/u/3722405?v=4"
         size="sm"
         color="white"
         bg="blue.500"
@@ -41,39 +47,39 @@ const AssistantAvatar = () => {
 type Message = {
   role: 'user' | 'assistant';
   content: string;
-}
+};
 
 export default function Chat() {
-  const [message, setMessage] = useState('')
-  const [messages, setMessages] = useState<Message[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const textAreaRef = useRef<HTMLTextAreaElement>(null)
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = async () => {
     try {
-      setIsLoading(true)
-      setMessage('')
-      let newMessages: Message[] = [...messages, { role: 'user', content: message }]
-      setMessages(newMessages)
+      setIsLoading(true);
+      setMessage('');
+      let newMessages: Message[] = [...messages, { role: 'user', content: message }];
+      setMessages(newMessages);
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ messages: newMessages })
+        body: JSON.stringify({ messages: newMessages }),
       });
 
       if (!response.ok) {
         throw new Error('Error sending data');
       }
 
-      if(response.body) {
+      if (response.body) {
         const reader = response.body.getReader();
         reader.read().then(function processResult(result) {
           const decoder = new TextDecoder();
           let chunk = '';
-          chunk += decoder.decode(result.value, {stream: true});
-  
+          chunk += decoder.decode(result.value, { stream: true });
+
           // Split chunk into individual data objects
           const dataObjects = chunk.split('\n').filter(Boolean);
           // Process latest data object
@@ -89,24 +95,24 @@ export default function Chat() {
                 const { content, role } = jsonData.choices[0].delta;
 
                 if (role === 'assistant') {
-                  newMessages = [...newMessages, { role, content }]
-                  setMessages(newMessages)
-                } else if(!!content) {
-                  const lastMessage = newMessages[newMessages.length - 1]
-                  lastMessage.content += content
-                  setMessages([...newMessages.slice(0, newMessages.length - 1), lastMessage])
+                  newMessages = [...newMessages, { role, content }];
+                  setMessages(newMessages);
+                } else if (!!content) {
+                  const lastMessage = newMessages[newMessages.length - 1];
+                  lastMessage.content += content;
+                  setMessages([...newMessages.slice(0, newMessages.length - 1), lastMessage]);
                 }
               }
-            })
+            });
             reader.read().then(processResult);
           }
         });
       }
     } catch (error) {
       console.error('Error:', error);
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (message.trim().length <= 0) return;
@@ -119,29 +125,53 @@ export default function Chat() {
   };
 
   const handleReset = () => {
-    setMessages([])
-  }
+    setMessages([]);
+  };
 
-  const Example = ({ question }: {question: string}) => (
+  const Example = ({ question }: { question: string }) => (
     <Flex>
-      <Button colorScheme="blue" variant="link" onClick={() => {
-        setMessage(question)
-        textAreaRef.current?.focus()
-      }}>
+      <Button
+        colorScheme="blue"
+        variant="link"
+        onClick={() => {
+          setMessage(question);
+          textAreaRef.current?.focus();
+        }}
+      >
         {question}
       </Button>
     </Flex>
-  )
+  );
 
   return (
     <>
-      <Flex flexDir="column" gap={40} justify="space-between" flex={1} height="100%" overflowY="auto" w="full" padding="24px" >
-        <Flex flexDir="column" align="center" gap={2} paddingBottom="150px" maxW={1100} margin="0 auto">
-          <Heading as='h1' size="lg">ResumeGPT - Matthew &quot;Marty&quot; Mitchener</Heading>
+      <Flex
+        flexDir="column"
+        gap={40}
+        justify="space-between"
+        flex={1}
+        height="100%"
+        overflowY="auto"
+        w="full"
+        padding="24px"
+      >
+        <Flex
+          flexDir="column"
+          align="center"
+          gap={2}
+          paddingBottom="150px"
+          maxW={1100}
+          margin="0 auto"
+        >
+          <Heading as="h1" size="lg">
+            ResumeGPT - Matthew &quot;Marty&quot; Mitchener
+          </Heading>
           <Text as="p" textAlign="center">
-            ResumeGPT is an AI chatbot powered by OpenAI&apos;s chat completion API. Developed using NextJS and hosted on Vercel, this site enables you to inquire about my resume or ask questions specifically about the chatbot itself.
+            ResumeGPT is an AI chatbot powered by OpenAI&apos;s chat completion API. Developed using
+            NextJS and hosted on Vercel, this site enables you to inquire about my resume or ask
+            questions specifically about the chatbot itself.
           </Text>
-          <Link href='https://github.com/omniphx/resume-gpt' isExternal>
+          <Link href="https://github.com/omniphx/resume-gpt" isExternal>
             <Flex align="center" gap={2} fontWeight="600" mb={2}>
               <BsGithub /> View this project on github
             </Flex>
@@ -162,7 +192,9 @@ export default function Chat() {
       {messages.length === 0 && (
         <Flex position="absolute" w="full" justify="center" align="center" top={0} height="100vh">
           <Flex flexDir="column" gap={2}>
-            <Heading as='h3' size="sm">Try some of the following questions:</Heading>
+            <Heading as="h3" size="sm">
+              Try some of the following questions:
+            </Heading>
             <Flex flexDir="column" justify="flex-start" gap={2} ml={4}>
               <Example question="What is your job experience?" />
               <Example question="What are your preferred programming languages?" />
@@ -208,7 +240,7 @@ export default function Chat() {
               <IconButton
                 aria-label="Reset"
                 disabled={isLoading}
-                variant='ghost'
+                variant="ghost"
                 icon={<VscRefresh />}
                 colorScheme="blue"
                 onClick={handleReset}
@@ -216,8 +248,8 @@ export default function Chat() {
               <IconButton
                 aria-label="Send"
                 disabled={isLoading}
-                variant='ghost'
-                icon={<FaPaperPlane/>}
+                variant="ghost"
+                icon={<FaPaperPlane />}
                 colorScheme="blue"
                 onClick={handleSendMessage}
               />
@@ -226,5 +258,5 @@ export default function Chat() {
         </Stack>
       </Box>
     </>
-  )
+  );
 }
