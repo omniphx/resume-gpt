@@ -90,6 +90,7 @@ export default function Chat() {
           } else {
             dataObjects.forEach((data) => {
               const prepData = data.replace(/^data: /, '');
+              console.log(prepData);
               const jsonData = JSON.parse(prepData);
               if (jsonData.choices) {
                 const { content, role } = jsonData.choices[0].delta;
