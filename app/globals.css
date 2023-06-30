@@ -105,3 +105,7 @@ a {
     color-scheme: dark;
   }
 }
+
+main {
+  height: 100vh;
+}
