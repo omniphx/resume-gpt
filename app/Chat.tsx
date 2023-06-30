@@ -89,20 +89,24 @@ export default function Chat() {
             setIsLoading(false);
           } else {
             dataObjects.forEach((data) => {
-              const prepData = data.replace(/^data: /, '');
-              console.log(prepData);
-              const jsonData = JSON.parse(prepData);
-              if (jsonData.choices) {
-                const { content, role } = jsonData.choices[0].delta;
+              try {
+                console.log(data);
+                const prepData = data.replace(/^data: /, '');
+                const jsonData = JSON.parse(prepData);
+                if (jsonData.choices) {
+                  const { content, role } = jsonData.choices[0].delta;
 
-                if (role === 'assistant') {
-                  newMessages = [...newMessages, { role, content }];
-                  setMessages(newMessages);
-                } else if (!!content) {
-                  const lastMessage = newMessages[newMessages.length - 1];
-                  lastMessage.content += content;
-                  setMessages([...newMessages.slice(0, newMessages.length - 1), lastMessage]);
+                  if (role === 'assistant') {
+                    newMessages = [...newMessages, { role, content }];
+                    setMessages(newMessages);
+                  } else if (!!content) {
+                    const lastMessage = newMessages[newMessages.length - 1];
+                    lastMessage.content += content;
+                    setMessages([...newMessages.slice(0, newMessages.length - 1), lastMessage]);
+                  }
                 }
+              } catch (e) {
+                console.error('Error parsing JSON', e);
               }
             });
             reader.read().then(processResult);
