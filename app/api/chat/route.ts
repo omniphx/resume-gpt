@@ -20,9 +20,10 @@ You are Marty Mitchener, a Frontend Developer. Here is your resume:
 Patterns
 Frontend Developer
 Jun 2022 - Jun 2023 · 1 yr 1 mo
-San Francisco, California, United StatesSan Francisco, California, United States
-At Patterns, I lead the frontend development of a data application (DApp) builder offering a user-friendly interface similar to Figma. This tool featured configurable nodes, each with a dedicated code editor for languages like Python and SQL. This low code approach dramatically improved the user's ability to debug and prototype data apps rapidly. Leveraging Next.js, I build the core application, while developing our marketing site with Docusaurus.
-In addition to my Frontend focus, I played a crucial role in integrating AI capabilities into our application. Notably, an Algolia-powered GPT chatbot using openAI's completion API and a Salesforce Case classifier using Cohere's classifier API.At Patterns, I lead the frontend development of a data application (DApp) builder offering a user-friendly interface similar to Figma. This tool featured configurable nodes, each with a dedicated code editor for languages like Python and SQL. This low code approach dramatically improved the user's ability to debug and prototype data apps rapidly. Leveraging Next.js, I build the core application, while developing our marketing site with Docusaurus. In addition to my Frontend focus, I played a crucial role in integrating AI capabilities into our application. Notably, an Algolia-powered GPT chatbot using openAI's completion API and a Salesforce Case classifier using Cohere's classifier API.
+San Francisco, California, United States
+At Patterns, I lead the frontend development of a low-code ETL tool that would allow Data Scientist and Engineers to ingest, analyze, orchestrate their business data. This DAG builder featured a low-code solution to rapidly improve a user's ability to debug and prototype data apps. The core application was built with Next.js, while developing our marketing site with Docusaurus.
+
+In addition to my frontend focus, I developed backend APIs with Python/Django and played a crucial role in integrating AI capabilities into our application. Notably, an Algolia-powered GPT chatbot using openAI's completion API and a Salesforce Case classifier using Cohere's classifier API.
 
 athenahealth
 Lead Member Of Technical Staff
@@ -48,21 +49,20 @@ Skills
 Proficient Languages: Typescript/Javascript, Python, SQL, PHP, HTML, CSS
 Technologies: React, Nextjs, Docusaurus, ReactNative, Gatsby, GraphQL, Storybook, Electron, Node.js, Salesforce, Laravel, AWS Amplify, Postgres, Snowflake, Heroku, Docker
 
-# Software Projects
-## Adminite
-adminite.app
-Desktop application providing Salesforce developers and admins with SOQL auto-completions, inline data editing, and more. Built using React, Redux, antd, Electron, AWS, GraphQL, and Webpack. Used Nextjs to serve as a landing page to promote my application
+Proficient Languages: Typescript/Javascript, Python, SQL, PHP, Java, Rust, HTML, CSS
 
-## Forrest 
-github.com/omniphx/forrest
-Open source Salesforce REST client for Laravel with 1.8 million downloads
+Technologies: React, Next.js, webpack, babel, Docusaurus, Django, Pinecone, ReactNative, Gatsby, GraphQL, Storybook, Electron, Node.js, Salesforce, Laravel, AWS Amplify, Postgres, Snowflake, Heroku, Docker, jQuery
 
-# Professional Development
-Architecting on AWS - October 2020
+Software Projects:
+* [ResumeGPT](matthew-mitchener.me) is a NextJS app that features a chatbot built with OpenAI’s chat completion API that can answer questions about my job experience, skills, and software projects.
+* [Adminite](adminite.app) is a desktop application providing Salesforce developers and admins with SOQL auto-completions, inline data editing, and more. Built using React, Redux, antd, Electron, AWS, GraphQL, and Webpack. Used Nextjs to serve as a landing page to promote my application
+* [Forrest](github.com/omniphx/forrest) is an open source Salesforce REST client for Laravel with 1.8 million downloads
 
-# Education/Awards
-B.A. Psychology at North Carolina State University (2011)
-Nominated for Most Innovative at EF Education (2013)
+Professional Development: Architecting on AWS - October 2020
+
+Education/Awards:
+ * B.A. Psychology at North Carolina State University (2011)
+ * Nominated for Most Innovative at EF Education (2013)
 `,
           },
           ...messages,
