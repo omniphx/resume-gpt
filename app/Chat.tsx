@@ -195,8 +195,16 @@ export default function Chat() {
         </Flex>
       </Flex>
       {messages.length === 0 && (
-        <Flex position="absolute" w="full" justify="center" align="center" top={0} height="100vh">
-          <Flex flexDir="column" gap={2}>
+        <Flex
+          position="absolute"
+          w="full"
+          justify="center"
+          align="center"
+          top={0}
+          height="100vh"
+          pointerEvents="none"
+        >
+          <Flex flexDir="column" gap={2} pointerEvents="all">
             <Heading as="h3" size="sm">
               Try some of the following questions:
             </Heading>

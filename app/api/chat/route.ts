@@ -21,7 +21,7 @@ Patterns
 Frontend Developer
 Jun 2022 - Jun 2023 · 1 yr 1 mo
 San Francisco, California, United States
-At Patterns, I lead the frontend development of a low-code ETL tool that would allow Data Scientist and Engineers to ingest, analyze, orchestrate their business data. This DAG builder featured a low-code solution to rapidly improve a user's ability to debug and prototype data apps. The core application was built with Next.js, while developing our marketing site with Docusaurus.
+At Patterns, an early-stage YC21 startup, I lead the frontend development of a low-code ETL tool allowing Data Scientists and Engineers to ingest, analyze, and orchestrate their business data. This DAG builder featured a low-code solution to rapidly improve users' ability to debug and prototype data apps. The core application was built with React, Typescript, and Next.js, while developing our marketing site with React, Typescript and Docusaurus.
 
 In addition to my frontend focus, I developed backend APIs with Python/Django and played a crucial role in integrating AI capabilities into our application. Notably, an Algolia-powered GPT chatbot using openAI's completion API and a Salesforce Case classifier using Cohere's classifier API.
 
@@ -49,14 +49,15 @@ Skills
 Proficient Languages: Typescript/Javascript, Python, SQL, PHP, HTML, CSS
 Technologies: React, Nextjs, Docusaurus, ReactNative, Gatsby, GraphQL, Storybook, Electron, Node.js, Salesforce, Laravel, AWS Amplify, Postgres, Snowflake, Heroku, Docker
 
-Proficient Languages: Typescript/Javascript, Python, SQL, PHP, Java, Rust, HTML, CSS
+Proficient Languages: Typescript/Javascript, Python, SQL, PHP, Rust, Java, Apex, HTML5, CSS3
 
-Technologies: React, Next.js, webpack, babel, Docusaurus, Django, Pinecone, ReactNative, Gatsby, GraphQL, Storybook, Electron, Node.js, Salesforce, Laravel, AWS Amplify, Postgres, Snowflake, Heroku, Docker, jQuery
+Technologies: React, Next.js, GraphQL, Less/Sass, jest, React Testing Library, cypress, Playwright, babel, webpack, vite, Docusaurus, Django, Pinecone, ReactNative, Expo, Gatsby, Storybook, Electron, Node.js, Salesforce, Laravel, AWS Amplify, Postgres, Snowflake, Heroku, Docker, jQuery
 
 Software Projects:
+* [Forrest](github.com/omniphx/forrest) is an open source Salesforce REST client for Laravel with 1.8 million downloads
 * [ResumeGPT](matthew-mitchener.me) is a NextJS app that features a chatbot built with OpenAI’s chat completion API that can answer questions about my job experience, skills, and software projects.
 * [Adminite](adminite.app) is a desktop application providing Salesforce developers and admins with SOQL auto-completions, inline data editing, and more. Built using React, Redux, antd, Electron, AWS, GraphQL, and Webpack. Used Nextjs to serve as a landing page to promote my application
-* [Forrest](github.com/omniphx/forrest) is an open source Salesforce REST client for Laravel with 1.8 million downloads
+* [Vaccine Teacher Bot](github.com/omniphx/discord-ma-vaccine-bot) Amidst the COVID-19 pandemic, I created a Discord bot that alerts teachers and frontline workers in Massachusetts about new vaccine openings. This invaluable tool enables them to efficiently navigate the application process and secure appointments while juggling their demanding full-time responsibilities.
 
 Professional Development: Architecting on AWS - October 2020
 
