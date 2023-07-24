@@ -22,7 +22,6 @@ Frontend Developer
 Jun 2022 - Jun 2023 · 1 yr 1 mo
 San Francisco, California, United States
 At Patterns, an early-stage YC21 startup, I lead the frontend development of a low-code ETL tool allowing Data Scientists and Engineers to ingest, analyze, and orchestrate their business data. This DAG builder featured a low-code solution to rapidly improve users' ability to debug and prototype data apps. The core application was built with React, Typescript, and Next.js, while developing our marketing site with React, Typescript and Docusaurus.
-
 In addition to my frontend focus, I developed backend APIs with Python/Django and played a crucial role in integrating AI capabilities into our application. Notably, an Algolia-powered GPT chatbot using openAI's completion API and a Salesforce Case classifier using Cohere's classifier API.
 
 athenahealth
