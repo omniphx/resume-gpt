@@ -79,30 +79,32 @@ export default function Chat() {
           const decoder = new TextDecoder();
           let chunk = '';
           chunk += decoder.decode(result.value, { stream: true });
+          console.log(chunk);
 
           // Split chunk into individual data objects
           const dataObjects = chunk.split('\n').filter(Boolean);
-          // Process latest data object
-          const latestData = dataObjects[dataObjects.length - 1].replace(/^data: /, '');
-          if (latestData === '[DONE]') {
+          if (dataObjects.length === 0) {
             reader.cancel();
-            setIsLoading(false);
           } else {
+            // Process latest data object
             dataObjects.forEach((data) => {
               try {
-                console.log(data);
                 const prepData = data.replace(/^data: /, '');
-                const jsonData = JSON.parse(prepData);
-                if (jsonData.choices) {
-                  const { content, role } = jsonData.choices[0].delta;
+                if (prepData === '[DONE]') {
+                  setIsLoading(false);
+                } else {
+                  const jsonData = JSON.parse(prepData);
+                  if (jsonData.choices) {
+                    const { content, role } = jsonData.choices[0].delta;
 
-                  if (role === 'assistant') {
-                    newMessages = [...newMessages, { role, content }];
-                    setMessages(newMessages);
-                  } else if (!!content) {
-                    const lastMessage = newMessages[newMessages.length - 1];
-                    lastMessage.content += content;
-                    setMessages([...newMessages.slice(0, newMessages.length - 1), lastMessage]);
+                    if (role === 'assistant') {
+                      newMessages = [...newMessages, { role, content }];
+                      setMessages(newMessages);
+                    } else if (!!content) {
+                      const lastMessage = newMessages[newMessages.length - 1];
+                      lastMessage.content += content;
+                      setMessages([...newMessages.slice(0, newMessages.length - 1), lastMessage]);
+                    }
                   }
                 }
               } catch (e) {
