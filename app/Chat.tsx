@@ -53,14 +53,20 @@ export default function Chat() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = async () => {
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage || isLoading) return;
+
     try {
       setIsLoading(true);
+      setError(null);
       setMessage('');
-      let newMessages: Message[] = [...messages, { role: 'user', content: message }];
+      const newMessages: Message[] = [...messages, { role: 'user', content: trimmedMessage }];
       setMessages(newMessages);
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -69,56 +75,25 @@ export default function Chat() {
         body: JSON.stringify({ messages: newMessages }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Error sending data');
+        throw new Error(data?.error ?? 'Error sending data');
       }
 
-      if (response.body) {
-        const reader = response.body.getReader();
-        reader.read().then(function processResult(result) {
-          const decoder = new TextDecoder();
-          let chunk = '';
-          chunk += decoder.decode(result.value, { stream: true });
-          console.log(chunk);
-
-          // Split chunk into individual data objects
-          const dataObjects = chunk.split('\n').filter(Boolean);
-          if (dataObjects.length === 0) {
-            reader.cancel();
-          } else {
-            // Process latest data object
-            dataObjects.forEach((data) => {
-              try {
-                const prepData = data.replace(/^data: /, '');
-                if (prepData === '[DONE]') {
-                  setIsLoading(false);
-                } else {
-                  const jsonData = JSON.parse(prepData);
-                  if (jsonData.choices) {
-                    const { content, role } = jsonData.choices[0].delta;
-
-                    if (role === 'assistant') {
-                      newMessages = [...newMessages, { role, content }];
-                      setMessages(newMessages);
-                    } else if (!!content) {
-                      const lastMessage = newMessages[newMessages.length - 1];
-                      lastMessage.content += content;
-                      setMessages([...newMessages.slice(0, newMessages.length - 1), lastMessage]);
-                    }
-                  }
-                }
-              } catch (e) {
-                console.error('Error parsing JSON', e);
-              }
-            });
-            reader.read().then(processResult);
-          }
-        });
+      if (!data?.message) {
+        throw new Error('The assistant returned an empty response.');
       }
+
+      setMessages([...newMessages, { role: 'assistant', content: data.message }]);
     } catch (error) {
       console.error('Error:', error);
+      setError(error instanceof Error ? error.message : 'Something went wrong.');
       setIsLoading(false);
+      return;
     }
+
+    setIsLoading(false);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -133,6 +108,7 @@ export default function Chat() {
 
   const handleReset = () => {
     setMessages([]);
+    setError(null);
   };
 
   const Example = ({ question }: { question: string }) => (
@@ -183,6 +159,19 @@ export default function Chat() {
               <BsGithub /> View this project on github
             </Flex>
           </Link>
+          {error && (
+            <Box
+              w="full"
+              bg="red.900"
+              borderWidth="1px"
+              borderColor="red.400"
+              borderRadius="md"
+              px={4}
+              py={3}
+            >
+              <Text color="red.100">{error}</Text>
+            </Box>
+          )}
           {messages.map((message, index) => (
             <Fragment key={index}>
               <Divider />
