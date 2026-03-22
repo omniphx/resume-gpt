@@ -1,5 +1,7 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
+import { ColorModeScript } from '@chakra-ui/react';
+import theme from './theme';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -10,8 +12,16 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html
+      lang="en"
+      data-theme="dark"
+      style={{ colorScheme: 'dark' }}
+      suppressHydrationWarning
+    >
+      <body className={`${inter.className} chakra-ui-dark`}>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        {children}
+      </body>
     </html>
   );
 }
