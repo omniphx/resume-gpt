@@ -144,10 +144,14 @@ export default function Chat() {
   };
 
   const Example = ({ question }: { question: string }) => (
-    <Flex>
+    <Flex w="full" justify="center">
       <Button
         colorScheme="blue"
         variant="link"
+        whiteSpace="normal"
+        textAlign="center"
+        maxW="100%"
+        height="auto"
         onClick={() => {
           setMessage(question);
           textAreaRef.current?.focus();
@@ -160,138 +164,166 @@ export default function Chat() {
 
   return (
     <>
-      <Flex
-        flexDir="column"
-        gap={40}
-        justify="space-between"
-        flex={1}
-        height="100%"
-        overflowY="auto"
-        w="full"
-        padding="24px"
-      >
+      <Box w="full" px={{ base: 4, md: 6 }} py={{ base: 4, md: 6 }}>
         <Flex
-          flexDir="column"
-          align="center"
-          gap={2}
-          paddingBottom="150px"
-          maxW={1100}
+          flexDir={{ base: 'column', lg: 'row' }}
+          gap={{ base: 8, lg: 12 }}
+          w="full"
+          maxW="1400px"
           margin="0 auto"
         >
-          <Heading as="h1" size="lg">
-            ResumeGPT - Matthew &quot;Marty&quot; Mitchener
-          </Heading>
-          <Text as="p" textAlign="center">
-            ResumeGPT is an AI chatbot powered by OpenAI&apos;s chat completion API. Developed using
-            NextJS and hosted on Vercel, this site enables you to inquire about my resume or ask
-            questions specifically about the chatbot itself.
-          </Text>
-          <Link href="https://github.com/omniphx/resume-gpt" isExternal>
-            <Flex align="center" gap={2} fontWeight="600" mb={2}>
-              <BsGithub /> View this project on github
-            </Flex>
-          </Link>
-          {error && (
-            <Box
-              w="full"
-              bg="red.900"
-              borderWidth="1px"
-              borderColor="red.400"
-              borderRadius="md"
-              px={4}
-              py={3}
-            >
-              <Text color="red.100">{error}</Text>
-            </Box>
-          )}
-          {messages.map((message, index) => (
-            <Fragment key={index}>
-              <Divider />
-              <Flex key={index} my={4} w="full">
-                {message.role === 'assistant' ? <AssistantAvatar /> : <UserAvatar />}
-                <Box px={4} py={2} ml={4}>
-                  <Markdown>{message.content}</Markdown>
-                </Box>
-              </Flex>
-            </Fragment>
-          ))}
-        </Flex>
-      </Flex>
-      {messages.length === 0 && (
-        <Flex
-          position="absolute"
-          w="full"
-          justify="center"
-          align="center"
-          top={0}
-          height="100vh"
-          pointerEvents="none"
-        >
-          <Flex flexDir="column" gap={2} pointerEvents="all">
-            <Heading as="h3" size="sm">
-              Try some of the following questions:
+          <Box
+            as="aside"
+            display="flex"
+            flexDir="column"
+            alignItems="stretch"
+            gap={4}
+            w={{ base: 'full', lg: '320px' }}
+            flexShrink={0}
+            position={{ base: 'static', lg: 'sticky' }}
+            top={{ lg: 6 }}
+            alignSelf={{ lg: 'flex-start' }}
+            bg="whiteAlpha.50"
+            borderWidth="1px"
+            borderColor="whiteAlpha.200"
+            borderRadius="xl"
+            padding={{ base: 5, md: 6 }}
+          >
+            <Heading as="h1" size="lg">
+              Marty&apos;s Resume Agent
             </Heading>
-            <Flex flexDir="column" justify="flex-start" gap={2} ml={4}>
-              <Example question="What is your job experience?" />
-              <Example question="What are your preferred programming languages?" />
-              <Example question="What are some of your notable software projects?" />
-              <Example question="What is your education?" />
-            </Flex>
+            <Text as="p" textAlign="left">
+              Marty&apos;s Resume Agent is an AI chatbot powered by OpenAI&apos;s chat completion
+              API. Developed using NextJS and hosted on Vercel, this site lets you ask questions
+              about my resume or about how the chatbot itself works.
+            </Text>
+            <Link href="https://github.com/omniphx/resume-gpt" isExternal>
+              <Flex align="center" gap={2} fontWeight="600">
+                <BsGithub /> View this project on github
+              </Flex>
+            </Link>
+          </Box>
+          <Flex flexDir="column" flex={1} minW={0} paddingBottom="180px">
+            {error && (
+              <Box
+                w="full"
+                bg="red.900"
+                borderWidth="1px"
+                borderColor="red.400"
+                borderRadius="md"
+                px={4}
+                py={3}
+                mb={4}
+              >
+                <Text color="red.100">{error}</Text>
+              </Box>
+            )}
+            {messages.length === 0 ? (
+              <Flex
+                flex={1}
+                align="center"
+                justify="center"
+                minH={{ base: '240px', lg: '420px' }}
+                borderWidth="1px"
+                borderColor="whiteAlpha.200"
+                borderRadius="xl"
+                bg="whiteAlpha.50"
+                px={8}
+              >
+                <Flex
+                  flexDir="column"
+                  gap={4}
+                  align="center"
+                  pointerEvents="all"
+                  w="full"
+                  maxW="32rem"
+                >
+                  <Text color="whiteAlpha.700" textAlign="center" maxW="32rem">
+                    Ask about experience, projects, leadership, technical skills, or how this chat
+                    app was built.
+                  </Text>
+                  <Flex flexDir="column" justify="flex-start" gap={2} align="center" w="full">
+                    <Heading as="h3" size="sm">
+                      Try asking:
+                    </Heading>
+                    <Example question="What is your job experience?" />
+                    <Example question="What are your preferred programming languages?" />
+                    <Example question="What are some of your notable software projects?" />
+                    <Example question="What is your education?" />
+                  </Flex>
+                </Flex>
+              </Flex>
+            ) : (
+              <Flex flexDir="column">
+                {messages.map((message, index) => (
+                  <Fragment key={index}>
+                    {index > 0 && <Divider />}
+                    <Flex my={4} w="full">
+                      {message.role === 'assistant' ? <AssistantAvatar /> : <UserAvatar />}
+                      <Box px={4} py={2} ml={4} minW={0}>
+                        <Markdown>{message.content}</Markdown>
+                      </Box>
+                    </Flex>
+                  </Fragment>
+                ))}
+              </Flex>
+            )}
           </Flex>
         </Flex>
-      )}
+      </Box>
       <Box
         w="full"
-        position="absolute"
+        position="fixed"
         pointerEvents="none"
         bottom="0"
         left="0"
         bg="linear-gradient(transparent, 50%, rgb(26, 32, 44))"
-        paddingX={{ base: 0, md: 4 }}
+        px={{ base: 0, md: 4 }}
       >
-        <Stack
-          spacing={4}
-          mt={16}
-          position="relative"
-          marginX={{ base: 0, md: 'auto' }}
-          maxW={{ base: '100%', md: '43em', xl: '75em' }}
-          marginBottom={{ base: 0, md: 50 }}
-          pointerEvents="all"
+        <Flex
+          w="full"
+          maxW="1400px"
+          margin="0 auto"
+          gap={{ base: 0, lg: 12 }}
+          align="flex-end"
         >
-          <InputGroup size="md">
-            <Textarea
-              ref={textAreaRef}
-              bg="rgb(26, 32, 44)"
-              resize="none"
-              placeholder="Type here..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              borderRadius={{ base: 0, md: '6px' }}
-              borderWidth={{ base: 0, md: '1px' }}
-              borderTopWidth="1px"
-              paddingRight="50px"
-            />
-            <InputRightElement width="6em" mt={1}>
-              <IconButton
-                aria-label="Reset"
-                disabled={isLoading}
-                variant="ghost"
-                icon={<VscRefresh />}
-                colorScheme="blue"
-                onClick={handleReset}
+          <Box display={{ base: 'none', lg: 'block' }} w="320px" flexShrink={0} />
+          <Stack spacing={4} mt={16} mb={{ base: 0, md: 6 }} flex={1} pointerEvents="all">
+            <InputGroup size="md">
+              <Textarea
+                ref={textAreaRef}
+                bg="rgb(26, 32, 44)"
+                resize="none"
+                placeholder="Type here..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                borderRadius={{ base: 0, md: '6px' }}
+                borderWidth={{ base: 0, md: '1px' }}
+                borderTopWidth="1px"
+                paddingRight="50px"
               />
-              <IconButton
-                aria-label="Send"
-                disabled={isLoading}
-                variant="ghost"
-                icon={<FaPaperPlane />}
-                colorScheme="blue"
-                onClick={handleSendMessage}
-              />
-            </InputRightElement>
-          </InputGroup>
-        </Stack>
+              <InputRightElement width="6em" mt={1}>
+                <IconButton
+                  aria-label="Reset"
+                  disabled={isLoading}
+                  variant="ghost"
+                  icon={<VscRefresh />}
+                  colorScheme="blue"
+                  onClick={handleReset}
+                />
+                <IconButton
+                  aria-label="Send"
+                  disabled={isLoading}
+                  variant="ghost"
+                  icon={<FaPaperPlane />}
+                  colorScheme="blue"
+                  onClick={handleSendMessage}
+                />
+              </InputRightElement>
+            </InputGroup>
+          </Stack>
+        </Flex>
       </Box>
     </>
   );

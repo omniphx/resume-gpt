@@ -6,10 +6,12 @@ import {
   Box,
   ChakraProps,
   Code,
+  Heading,
   Image,
   Link,
   ListItem,
   OrderedList,
+  Text,
   Table,
   Tbody,
   Td,
@@ -46,10 +48,36 @@ function omitMarkdownListProps({
   return props;
 }
 
+type MarkdownNodeProps = {
+  node?: unknown;
+  sourcePosition?: unknown;
+} & Record<string, unknown>;
+
+function omitMarkdownNodeProps({
+  ...props
+}: MarkdownNodeProps) {
+  delete props.node;
+  delete props.sourcePosition;
+  return props;
+}
+
 const Markdown = forwardRef<HTMLDivElement, MarkdownProps>(
   ({ fontSize = '1em', children, placeHolderText, ...rest }, ref) => {
     return (
-      <Box ref={ref} {...rest} fontSize={fontSize} lineHeight={'1.5'}>
+      <Box
+        ref={ref}
+        {...rest}
+        fontSize={fontSize}
+        lineHeight="1.7"
+        sx={{
+          '& > *:first-of-type': {
+            marginTop: 0,
+          },
+          '& > *:last-child': {
+            marginBottom: 0,
+          },
+        }}
+      >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           linkTarget="_blank"
@@ -85,13 +113,67 @@ const Markdown = forwardRef<HTMLDivElement, MarkdownProps>(
             },
             a({ children, ...props }) {
               return (
-                <Link {...props} overflowWrap="anywhere">
+                <Link
+                  {...omitMarkdownNodeProps(props)}
+                  overflowWrap="anywhere"
+                  color="blue.200"
+                  textDecoration="underline"
+                >
                   {children}
                 </Link>
               );
             },
+            p({ children }) {
+              return (
+                <Text mb={4} lineHeight="1.8">
+                  {children}
+                </Text>
+              );
+            },
+            h1({ children }) {
+              return (
+                <Heading as="h1" size="lg" mt={6} mb={3} lineHeight="1.3">
+                  {children}
+                </Heading>
+              );
+            },
+            h2({ children }) {
+              return (
+                <Heading as="h2" size="md" mt={6} mb={3} lineHeight="1.35">
+                  {children}
+                </Heading>
+              );
+            },
+            h3({ children }) {
+              return (
+                <Heading as="h3" size="sm" mt={5} mb={2} lineHeight="1.4">
+                  {children}
+                </Heading>
+              );
+            },
+            h4({ children }) {
+              return (
+                <Heading as="h4" size="xs" mt={4} mb={2} lineHeight="1.4">
+                  {children}
+                </Heading>
+              );
+            },
+            h5({ children }) {
+              return (
+                <Heading as="h5" size="xs" mt={4} mb={2} lineHeight="1.4">
+                  {children}
+                </Heading>
+              );
+            },
+            h6({ children }) {
+              return (
+                <Heading as="h6" size="xs" mt={4} mb={2} lineHeight="1.4" textTransform="uppercase">
+                  {children}
+                </Heading>
+              );
+            },
             table({ children }) {
-              return <Table size="xs">{children}</Table>;
+              return <Table size="xs" my={4}>{children}</Table>;
             },
             thead({ children }) {
               return <Thead>{children}</Thead>;
@@ -110,19 +192,31 @@ const Markdown = forwardRef<HTMLDivElement, MarkdownProps>(
             },
             img({ children, ...props }) {
               return (
-                <Image alt="image" {...props}>
+                <Image alt="image" my={4} borderRadius="md" {...props}>
                   {children}
                 </Image>
               );
             },
             ul({ children, ...props }) {
-              return <UnorderedList {...omitMarkdownListProps(props)}>{children}</UnorderedList>;
+              return (
+                <UnorderedList {...omitMarkdownListProps(props)} pl={5} spacing={2} my={4}>
+                  {children}
+                </UnorderedList>
+              );
             },
             ol({ children, ...props }) {
-              return <OrderedList {...omitMarkdownListProps(props)}>{children}</OrderedList>;
+              return (
+                <OrderedList {...omitMarkdownListProps(props)} pl={5} spacing={2} my={4}>
+                  {children}
+                </OrderedList>
+              );
             },
             li({ children, ...props }) {
-              return <ListItem {...omitMarkdownListProps(props)}>{children}</ListItem>;
+              return (
+                <ListItem {...omitMarkdownListProps(props)} pl={1}>
+                  {children}
+                </ListItem>
+              );
             },
           }}
         >

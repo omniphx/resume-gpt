@@ -12,6 +12,35 @@ function parseOpenAIStream(stream: ReadableStream<Uint8Array>) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
+  const enqueueContentFromEvent = (
+    controller: ReadableStreamDefaultController<Uint8Array>,
+    event: string,
+  ) => {
+    const lines = event
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith('data:'));
+
+    for (const line of lines) {
+      const data = line.slice(5).trim();
+
+      if (!data || data === '[DONE]') {
+        continue;
+      }
+
+      try {
+        const payload = JSON.parse(data);
+        const content = payload?.choices?.[0]?.delta?.content;
+
+        if (typeof content === 'string' && content.length > 0) {
+          controller.enqueue(encoder.encode(content));
+        }
+      } catch {
+        // Ignore incomplete or non-content SSE payloads and wait for the next chunk.
+      }
+    }
+  };
+
   return new ReadableStream<Uint8Array>({
     async start(controller) {
       const reader = stream.getReader();
@@ -28,25 +57,7 @@ function parseOpenAIStream(stream: ReadableStream<Uint8Array>) {
           buffer = events.pop() ?? '';
 
           for (const event of events) {
-            const lines = event
-              .split('\n')
-              .map((line) => line.trim())
-              .filter((line) => line.startsWith('data:'));
-
-            for (const line of lines) {
-              const data = line.slice(5).trim();
-
-              if (!data || data === '[DONE]') {
-                continue;
-              }
-
-              const payload = JSON.parse(data);
-              const content = payload?.choices?.[0]?.delta?.content;
-
-              if (typeof content === 'string' && content.length > 0) {
-                controller.enqueue(encoder.encode(content));
-              }
-            }
+            enqueueContentFromEvent(controller, event);
           }
         }
 
@@ -56,25 +67,7 @@ function parseOpenAIStream(stream: ReadableStream<Uint8Array>) {
         }
 
         if (buffer.trim().length > 0) {
-          const lines = buffer
-            .split('\n')
-            .map((line) => line.trim())
-            .filter((line) => line.startsWith('data:'));
-
-          for (const line of lines) {
-            const data = line.slice(5).trim();
-
-            if (!data || data === '[DONE]') {
-              continue;
-            }
-
-            const payload = JSON.parse(data);
-            const content = payload?.choices?.[0]?.delta?.content;
-
-            if (typeof content === 'string' && content.length > 0) {
-              controller.enqueue(encoder.encode(content));
-            }
-          }
+          enqueueContentFromEvent(controller, buffer);
         }
 
         controller.close();
@@ -123,7 +116,7 @@ export async function POST(req: Request) {
           ...messages,
         ],
         stream: true,
-        max_tokens: 512,
+        max_completion_tokens: 1600,
         temperature: 0.75,
       }),
     });
