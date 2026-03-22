@@ -94,13 +94,13 @@ const Markdown = forwardRef<HTMLDivElement, MarkdownProps>(
                 </Image>
               );
             },
-            ul({ children, ...props }) {
+            ul({ children, depth, ordered, index, checked, node, sourcePosition, ...props }) {
               return <UnorderedList {...props}>{children}</UnorderedList>;
             },
-            ol({ children, ...props }) {
+            ol({ children, depth, ordered, index, checked, node, sourcePosition, ...props }) {
               return <OrderedList {...props}>{children}</OrderedList>;
             },
-            li({ children, ...props }) {
+            li({ children, depth, ordered, index, checked, node, sourcePosition, ...props }) {
               return <ListItem {...props}>{children}</ListItem>;
             },
           }}
