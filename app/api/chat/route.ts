@@ -8,6 +8,85 @@ type ChatMessage = {
 
 export const runtime = 'nodejs';
 
+function parseOpenAIStream(stream: ReadableStream<Uint8Array>) {
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+
+  return new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const reader = stream.getReader();
+      let buffer = '';
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const events = buffer.split('\n\n');
+          buffer = events.pop() ?? '';
+
+          for (const event of events) {
+            const lines = event
+              .split('\n')
+              .map((line) => line.trim())
+              .filter((line) => line.startsWith('data:'));
+
+            for (const line of lines) {
+              const data = line.slice(5).trim();
+
+              if (!data || data === '[DONE]') {
+                continue;
+              }
+
+              const payload = JSON.parse(data);
+              const content = payload?.choices?.[0]?.delta?.content;
+
+              if (typeof content === 'string' && content.length > 0) {
+                controller.enqueue(encoder.encode(content));
+              }
+            }
+          }
+        }
+
+        const finalChunk = decoder.decode();
+        if (finalChunk) {
+          buffer += finalChunk;
+        }
+
+        if (buffer.trim().length > 0) {
+          const lines = buffer
+            .split('\n')
+            .map((line) => line.trim())
+            .filter((line) => line.startsWith('data:'));
+
+          for (const line of lines) {
+            const data = line.slice(5).trim();
+
+            if (!data || data === '[DONE]') {
+              continue;
+            }
+
+            const payload = JSON.parse(data);
+            const content = payload?.choices?.[0]?.delta?.content;
+
+            if (typeof content === 'string' && content.length > 0) {
+              controller.enqueue(encoder.encode(content));
+            }
+          }
+        }
+
+        controller.close();
+      } catch (error) {
+        controller.error(error);
+      } finally {
+        reader.releaseLock();
+      }
+    },
+  });
+}
+
 export async function POST(req: Request) {
   try {
     if (!process.env.OPENAI_API_KEY) {
@@ -43,29 +122,32 @@ export async function POST(req: Request) {
           },
           ...messages,
         ],
+        stream: true,
         max_tokens: 512,
         temperature: 0.75,
       }),
     });
 
-    const payload = await openAIResponse.json();
-
     if (!openAIResponse.ok) {
+      const payload = await openAIResponse.json().catch(() => null);
       const errorMessage =
         payload?.error?.message ?? 'OpenAI request failed before a response was generated.';
       return NextResponse.json({ error: errorMessage }, { status: openAIResponse.status });
     }
 
-    const content = payload?.choices?.[0]?.message?.content;
-
-    if (typeof content !== 'string' || content.trim().length === 0) {
+    if (!openAIResponse.body) {
       return NextResponse.json(
-        { error: 'OpenAI returned an empty response.' },
+        { error: 'OpenAI returned an empty response stream.' },
         { status: 502 },
       );
     }
 
-    return NextResponse.json({ message: content });
+    return new Response(parseOpenAIStream(openAIResponse.body), {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+      },
+    });
   } catch (error) {
     console.error(error);
 

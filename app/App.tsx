@@ -1,5 +1,6 @@
 'use client';
 import { ChakraProvider } from '@chakra-ui/react';
+import EmotionRegistry from './EmotionRegistry';
 import theme from './theme';
 
 type AppProps = {
@@ -7,5 +8,9 @@ type AppProps = {
 };
 
 export default function App({ children }: AppProps) {
-  return <ChakraProvider theme={theme}>{children}</ChakraProvider>;
+  return (
+    <EmotionRegistry>
+      <ChakraProvider theme={theme}>{children}</ChakraProvider>
+    </EmotionRegistry>
+  );
 }

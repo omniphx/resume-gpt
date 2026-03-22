@@ -60,12 +60,13 @@ export default function Chat() {
     const trimmedMessage = message.trim();
     if (!trimmedMessage || isLoading) return;
 
+    const newMessages: Message[] = [...messages, { role: 'user', content: trimmedMessage }];
+
     try {
       setIsLoading(true);
       setError(null);
       setMessage('');
-      const newMessages: Message[] = [...messages, { role: 'user', content: trimmedMessage }];
-      setMessages(newMessages);
+      setMessages([...newMessages, { role: 'assistant', content: '' }]);
 
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -75,20 +76,51 @@ export default function Chat() {
         body: JSON.stringify({ messages: newMessages }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data?.error ?? 'Error sending data');
+        const payload = await response.json().catch(() => null);
+        throw new Error(payload?.error ?? 'Error sending data');
       }
 
-      if (!data?.message) {
+      if (!response.body) {
+        throw new Error('The assistant returned an empty response stream.');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let assistantMessage = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) break;
+
+        assistantMessage += decoder.decode(value, { stream: true });
+        setMessages([
+          ...newMessages,
+          {
+            role: 'assistant',
+            content: assistantMessage,
+          },
+        ]);
+      }
+
+      assistantMessage += decoder.decode();
+
+      if (!assistantMessage.trim()) {
         throw new Error('The assistant returned an empty response.');
       }
 
-      setMessages([...newMessages, { role: 'assistant', content: data.message }]);
+      setMessages([
+        ...newMessages,
+        {
+          role: 'assistant',
+          content: assistantMessage,
+        },
+      ]);
     } catch (error) {
       console.error('Error:', error);
       setError(error instanceof Error ? error.message : 'Something went wrong.');
+      setMessages(newMessages);
       setIsLoading(false);
       return;
     }
