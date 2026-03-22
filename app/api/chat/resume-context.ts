@@ -27,7 +27,7 @@ export async function getResumeContext() {
   if (resumeContextFile) {
     const resolvedPath = path.isAbsolute(resumeContextFile)
       ? resumeContextFile
-      : path.join(process.cwd(), resumeContextFile);
+      : path.join(/* turbopackIgnore: true */ process.cwd(), resumeContextFile);
 
     return readResumeFromFile(resolvedPath);
   }

@@ -25,6 +25,27 @@ type MarkdownProps = ChakraProps & {
   placeHolderText?: string;
 };
 
+type MarkdownListProps = {
+  depth?: number;
+  ordered?: boolean;
+  index?: number;
+  checked?: boolean | null;
+  node?: unknown;
+  sourcePosition?: unknown;
+} & Record<string, unknown>;
+
+function omitMarkdownListProps({
+  ...props
+}: MarkdownListProps) {
+  delete props.depth;
+  delete props.ordered;
+  delete props.index;
+  delete props.checked;
+  delete props.node;
+  delete props.sourcePosition;
+  return props;
+}
+
 const Markdown = forwardRef<HTMLDivElement, MarkdownProps>(
   ({ fontSize = '1em', children, placeHolderText, ...rest }, ref) => {
     return (
@@ -94,14 +115,14 @@ const Markdown = forwardRef<HTMLDivElement, MarkdownProps>(
                 </Image>
               );
             },
-            ul({ children, depth, ordered, index, checked, node, sourcePosition, ...props }) {
-              return <UnorderedList {...props}>{children}</UnorderedList>;
+            ul({ children, ...props }) {
+              return <UnorderedList {...omitMarkdownListProps(props)}>{children}</UnorderedList>;
             },
-            ol({ children, depth, ordered, index, checked, node, sourcePosition, ...props }) {
-              return <OrderedList {...props}>{children}</OrderedList>;
+            ol({ children, ...props }) {
+              return <OrderedList {...omitMarkdownListProps(props)}>{children}</OrderedList>;
             },
-            li({ children, depth, ordered, index, checked, node, sourcePosition, ...props }) {
-              return <ListItem {...props}>{children}</ListItem>;
+            li({ children, ...props }) {
+              return <ListItem {...omitMarkdownListProps(props)}>{children}</ListItem>;
             },
           }}
         >
