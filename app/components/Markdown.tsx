@@ -1,6 +1,6 @@
 import React, { forwardRef, memo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import BaseSyntaxHighlighter from 'react-syntax-highlighter';
 import { nightOwl } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {
   Box,
@@ -19,8 +19,10 @@ import {
   Thead,
   Tr,
   UnorderedList,
-} from '@chakra-ui/react';
+} from '../chakra-compat';
 import remarkGfm from 'remark-gfm';
+
+const SyntaxHighlighter = BaseSyntaxHighlighter as unknown as React.ComponentType<any>;
 
 type MarkdownProps = ChakraProps & {
   children?: string;

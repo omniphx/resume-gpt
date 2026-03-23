@@ -1,10 +1,11 @@
 'use client';
-import { ChakraProvider } from '@chakra-ui/react';
+import type { ReactNode } from 'react';
+import { ChakraProvider } from './chakra-compat';
 import EmotionRegistry from './EmotionRegistry';
 import theme from './theme';
 
 type AppProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export default function App({ children }: AppProps) {

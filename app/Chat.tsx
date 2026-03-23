@@ -13,12 +13,16 @@ import {
   Stack,
   Text,
   Textarea,
-} from '@chakra-ui/react';
-import { Fragment, useRef, useState } from 'react';
-import { FaPaperPlane } from 'react-icons/fa';
-import { BsGithub } from 'react-icons/bs';
-import { VscRefresh } from 'react-icons/vsc';
+} from './chakra-compat';
+import { Fragment, type ComponentType, useRef, useState } from 'react';
+import { FaPaperPlane as BaseFaPaperPlane } from 'react-icons/fa';
+import { BsGithub as BaseBsGithub } from 'react-icons/bs';
+import { VscRefresh as BaseVscRefresh } from 'react-icons/vsc';
 import Markdown from './components/Markdown';
+
+const FaPaperPlane = BaseFaPaperPlane as unknown as ComponentType;
+const BsGithub = BaseBsGithub as unknown as ComponentType;
+const VscRefresh = BaseVscRefresh as unknown as ComponentType;
 
 const UserAvatar = () => {
   return (
@@ -296,7 +300,7 @@ export default function Chat() {
                 resize="none"
                 placeholder="Type here..."
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
                 onKeyDown={handleKeyPress}
                 borderRadius={{ base: 0, md: '6px' }}
                 borderWidth={{ base: 0, md: '1px' }}
